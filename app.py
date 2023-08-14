@@ -136,6 +136,35 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
-@app.route("/members")
+@app.route("/members", methods=["GET", "POST"])
 def members():
-    return render_template('members.html')
+    #affiching the current members
+    clients=db.execute("select cl_Fname,cl_Lname,cl_num,cl_BD,student from client;")
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        #checking the validty of the phone number
+        if (not request.form.get("cl_num").isnumeric()) or len(request.form.get("cl_num"))<8:
+            return render_template('members.html', message1="phone number invalid",clients=clients)
+        #checking the phone number already exist
+        number=db.execute("select cl_Fname from client where cl_num=?;",request.form.get("cl_num"))
+        if len(number)>0:
+            return render_template('members.html', message3="phone number already exist",clients=clients)
+        #adding the member to the table
+        db.execute(
+                "insert into client (cl_Fname,cl_Lname,cl_num,cl_BD,student) values(?,?,?,?,?)",
+                request.form.get("cl_Fname"),
+                request.form.get("cl_Lname"),
+                int(request.form.get("cl_num")),
+                request.form.get("cl_BD"),
+                request.form.get("student")
+
+            )
+        clients=db.execute("select cl_Fname,cl_Lname,cl_num,cl_BD,student from client;")
+
+        
+        return render_template('members.html',message2="member added successfuly",clients=clients)
+        
+        
+        
+    else:    
+        return render_template('members.html',clients=clients)

@@ -45,3 +45,32 @@ h2
     margin-left:80%;
    
 }
+.custom-button {
+    /*background-color: #3498db; /* Change to the desired background color */
+    color: rgb(0, 0, 0); /* Change to the desired text color */
+    border: none;
+    padding: 8px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+
+    
+}
+.custom-button:hover {
+    color: #e74c3c;
+    transform: translateY(-5px); /* Move the button up by 5px on hover */
+}
+#view
+{
+    border: 2px solid #42db34;
+}
+#edit
+{
+    border: 2px solid #00d9ff;
+}
+#delete
+{
+    border: 2px solid #ff0000;
+}

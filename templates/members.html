@@ -4,7 +4,9 @@
     Members
 {% endblock %}
 {% block main %}
-
+<p>{{message1}}</p>
+  <p>{{message2}}</p>
+  <p>{{message3}}</p>
 <h2>MEMBERS LIST</h2>
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="add">
@@ -55,11 +57,11 @@
             <div class="mb-3">
               <p>Etudiant</p>
               <label>
-                <input type="radio" name="etudiant" value="Yes">
+                <input type="radio" name="student" value="Yes">
                 Yes
             </label>
             <label>
-                <input type="radio" name="etudiant" value="No">
+                <input type="radio" name="student" value="No">
                 No
             </label>
           </div>
@@ -89,18 +91,23 @@
         <th scope="col">Phone Number</th>
         <th scope="col">Birth Date</th>
         <th scope="col">Student</th>
+        <th scope="col">Satuts</th>
+
          
         <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
-      {% for s in history %}
+      {% for client in clients %}
       <tr>
-      <td> {{s.name}}</td>
-      <td> {{s.price}}</td>
-      <td> {{s.trans_at}}</td>
-      <td> {{s.shares}}</td>
-      <td> {{s.trans_type}}</td>
+      <td> {{client.cl_Fname}} {{client.cl_Lname}}</td>
+      <td> {{client.cl_num}}</td>
+      <td> {{client.cl_BD}}</td>
+      <td> {{client.student}}</td>
+      <td> </td>
+      <td> <button type="button" class="custom-button" id="view">view</button>  <button type="button" class="custom-button" id="edit" >Edit</button>  <button type="button" id="delete" class="custom-button" >Delete</button></td>
+      
+
 
 
 
