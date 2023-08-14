@@ -136,3 +136,6 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
+@app.route("/members")
+def members():
+    return render_template('members.html')
