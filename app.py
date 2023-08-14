@@ -46,24 +46,24 @@ def login():
     if request.method == "POST":
         # Ensure username was submitted
         if not request.form.get("username"):
-            return render_template("login.html")
+            return render_template("login.html",message1="must provide username")
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return render_template("login.html")
+            return render_template("login.html",message2="must provide password")
         # Query database for username
         rows = db.execute(
-            "SELECT * FROM Admin WHERE username = ?", request.form.get("username")
+            "SELECT ad_id,hash FROM Admin WHERE ad_username = ?", request.form.get("username")
         )
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(
             rows[0]["hash"], request.form.get("password")
         ):
-            return render_template("login.html")
+            return render_template("login.html",message3="username or password incorrect")
 
         # Remember which user has logged in
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = rows[0]["ad_id"]
 
         # Redirect user to home page
 
@@ -72,3 +72,67 @@ def login():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user"""
+    # User reached route via POST (as by submitting a form via POST)
+
+    if request.method == "POST":
+        # Ensure username was submitted
+        if not request.form.get("username"):
+            return render_template("register.html", message1="must provide username")
+        if not request.form.get("mail"):
+            return render_template("register.html", message2="must provide your mail")
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            return render_template("register.html", message3="must provide password")
+        # Ensure password confirmation was submitted
+        elif not request.form.get("confirmation"):
+            return render_template("register.html", message4="must provide confirmation")
+        # Ensure password confirmation match the password
+        elif request.form.get("confirmation") != request.form.get("password"):
+            return render_template("register.html", message5="password must match confirmation")
+        # query the database
+        rows_username = db.execute(
+            "SELECT * FROM Admin WHERE ad_username = ?", request.form.get("username")
+        )
+        rows_mail = db.execute("SELECT * FROM Admin WHERE ad_mail = ?", request.form.get("mail"))
+        # checking the username is unique
+        if len(rows_username) > 0:
+            return  render_template("register.html", message6="username taken")
+        #checking the mail doesn't exist
+        if len(rows_mail) > 0:
+            return  render_template("register.html", message7="mail already exist")
+        # generating the hash password
+        pwhash = generate_password_hash(request.form.get("password"))
+        # adding the user
+        db.execute(
+            "INSERT INTO Admin (ad_username,ad_mail,hash) VALUES (?,?,?)",
+            request.form.get("username"),
+            request.form.get("mail"),
+            pwhash
+
+        )
+        # getting the user id
+        user_id = db.execute(
+            "SELECT ad_id FROM Admin WHERE ad_username = ?", request.form.get("username")
+        )
+        # Remember which user has logged in
+        session["user_id"] = user_id[0]["ad_id"]
+
+        # Redirect user to home page
+        return redirect("/")
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("register.html")
+
+@app.route("/logout")
+def logout():
+    """Log user out"""
+
+    # Forget any user_id
+    session.clear()
+
+    # Redirect user to login form
+    return redirect("/")
