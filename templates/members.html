@@ -16,41 +16,58 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Member</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">+ Add Member</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         
-        <table>
+        <table border="2" width="100%">
           <form action="/members" method="post">
             
             <tr>
-              <td>
+              <td >
             <div class="mb-3">
                 <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id=cl_Fname" name="cl_Fname" placeholder="First Name" type="text" required>
             </div>
           </td>
-          <td>
+          <td >
             <div class="mb-3">
                 <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="cl_Lname" name="cl_Lname" placeholder="Last Name" type="text" required>
             </div>
           </td>
           </tr>
           <tr>
-            <td>
+            <td >
             <div class="mb-3">
-                <input class="form-control mx-auto w-auto" id="cl_num" name="cl_num" placeholder="Phone Number" type="number" required>
+                <input class="form-control mx-auto w-auto" id="cl_num" name="cl_num" placeholder="Phone Number" type="tel" required>
             </div>
           </td>
-          <td>
+          <td >
             <div class="mb-3">
                 <input class="form-control mx-auto w-auto" id="cl_BD" name="cl_BD" placeholder="Birth Date" type="date" required>
             </div>
           </td>
+          
           </tr>
+
+         
+          <tr><td>
+            <div class="mb-3">
+              <p>Etudiant</p>
+              <label>
+                <input type="radio" name="etudiant" value="Yes">
+                Yes
+            </label>
+            <label>
+                <input type="radio" name="etudiant" value="No">
+                No
+            </label>
+          </div>
+
+          </td></tr>
           <tr>
             <td colspan="2">
-            <button  class="btn btn-default" type="submit">Add</button>
+            <button  class="btn btn-secondary" type="submit">Add</button>
             </td>
           </tr>
         </form>
