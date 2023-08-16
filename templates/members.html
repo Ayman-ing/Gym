@@ -182,22 +182,19 @@
       </tr>
     </thead>
     <tbody>
-      {% for client in clients %}
+      {% for m in member %}
       <tr>
-      <td> {{client.cl_Fname}} {{client.cl_Lname}}</td>
-      <td> {{client.cl_num}}</td>
-      <td> {{client.cl_BD}}</td>
-      <td> {{client.student}}</td>
-      <td>{% for m in membership %} 
-          {% if m.cl_id==client.cl_id %}
+      <td> {{m.cl_Fname}} {{m.cl_Lname}}</td>
+      <td> {{m.cl_num}}</td>
+      <td> {{m.cl_BD}}</td>
+      <td> {{m.student}}</td>
+      <td>
             {% if  moment  > m.ends_at %}
                 <p>unactive</p>
             {% else %}
                 <p>active</p>
                 
             {% endif %}
-          {% endif %}
-          {% endfor %}
           
           
       </td>
@@ -209,7 +206,18 @@
 
       </tr>
       {% endfor %}
-    
+      {% for client in clients %}
+      <tr>
+        <td> {{client.cl_Fname}} {{client.cl_Lname}}</td>
+        <td> {{client.cl_num}}</td>
+        <td> {{client.cl_BD}}</td>
+        <td> {{client.student}}</td>
+        <td>No membership</td>
+        <td> <button type="button" class="custom-button" id="view">view</button>  <button type="button" class="custom-button" id="edit" >Edit</button>  <button type="button" id="delete" class="custom-button" >Delete</button></td>
+      </tr>
+
+      {% endfor %}
+      
     </tbody>
   </table>
 
