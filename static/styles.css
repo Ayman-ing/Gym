@@ -74,3 +74,14 @@ h2
 {
     border: 2px solid #ff0000;
 }
+#add_m
+{
+    color:black;
+    text-decoration: none;
+    margin-right:80%;
+}
+td
+{
+   /* border: solid black;*/
+    padding:20px;
+}
