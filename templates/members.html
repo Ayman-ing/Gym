@@ -188,7 +188,19 @@
       <td> {{client.cl_num}}</td>
       <td> {{client.cl_BD}}</td>
       <td> {{client.student}}</td>
-      <td> </td>
+      <td>{% for m in membership %} 
+          {% if m.cl_id==client.cl_id %}
+            {% if  moment  > m.ends_at %}
+                <p>unactive</p>
+            {% else %}
+                <p>active</p>
+                
+            {% endif %}
+          {% endif %}
+          {% endfor %}
+          
+          
+      </td>
       <td> <button type="button" class="custom-button" id="view">view</button>  <button type="button" class="custom-button" id="edit" >Edit</button>  <button type="button" id="delete" class="custom-button" >Delete</button></td>
       
 
