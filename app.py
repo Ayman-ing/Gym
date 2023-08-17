@@ -142,22 +142,7 @@ def logout():
     return redirect("/")
 @app.route("/members", methods=["GET", "POST"])
 def members():
-    moment = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    
-    #getting necessary informations 
-    sport=db.execute("select sp_name from sport;")
-    member=db.execute("select * from member;")
-    clients=db.execute("select cl_id,cl_Fname,cl_Lname,cl_num,cl_BD,student from client where cl_id NOT IN (SELECT cl_id from membership) ;")
-    for m in member:
-        if moment  >= m["ends_at"]:
-            m["status"]="inactive"
-        else:
-            m["status"]="active"
-    # User reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
-        #checking the validty of the phone number
-        if (not request.form.get("cl_num").isnumeric()) or len(request.form.get("cl_num"))<8:
-            return render_template('members.html', message1="phone number invalid",member=member,moment=moment,clients=clients,sport=sport)
+    def add():
         #checking the phone number already exist
         number=db.execute("select cl_Fname from client where cl_num=?;",request.form.get("cl_num"))
         if len(number)>0:
@@ -193,6 +178,29 @@ def members():
                 
                 )
         return render_template('members.html',message5="member and his membership added successfuly",member=member,moment=moment,clients=clients,sport=sport)
+    moment = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    #getting necessary informations 
+    sport=db.execute("select sp_name from sport;")
+    member=db.execute("select * from member;")
+    clients=db.execute("select cl_id,cl_Fname,cl_Lname,cl_num,cl_BD,student from client where cl_id NOT IN (SELECT cl_id from membership) ;")
+    for m in member:
+        if moment  >= m["ends_at"]:
+            m["status"]="inactive"
+        else:
+            m["status"]="active"
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        #checking the validty of the phone number
+        if (not request.form.get("cl_num").isnumeric()) or len(request.form.get("cl_num"))<8:
+            return render_template('members.html', message1="phone number invalid",member=member,moment=moment,clients=clients,sport=sport)
+        #checking if it's an adding or an edit
+        if not request.form.get("cl_id"):
+            return add()
+        else:
+            return edit()
+        
+        
         
         
     else:

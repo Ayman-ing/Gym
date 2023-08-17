@@ -38,7 +38,7 @@
         
         <table border="2" width="100%">
           <form action="/members" method="post" id="myForm">
-            
+            <input type="hidden" name="cl_id" value="">
             <tr>
               <td >
             <div class="mb-3">
@@ -107,7 +107,9 @@
                 <div class="mb-3">
                   <label for="selectOption" id="label">Select a Sport:</label>
                   <select class="form-control" id="sp_name" name="sp_name" >
+                    <option value="">˅</option>
                     {% for s in sport %}
+                    
                     <option value="{{s.sp_name}}" >{{s.sp_name}}</option>
                     {% endfor %}
                   </select>
@@ -197,11 +199,11 @@
           
       </td>
       <td> <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#viewModal{{loop.index}}" id="view">view</button> 
-         <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#exampleModal" id="edit" >Edit</button> 
-          <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#exampleModal" id="delete" >Delete</button>
+         <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#edit{{loop.index}}" id="edit" >Edit</button> 
+          <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#delete{{loop.index}}" id="delete" >Delete</button>
         
           
-          <!-- Modal -->
+          <!-- Modal view -->
           <div class="modal fade" id="viewModal{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
               <div class="modal-content">
@@ -242,12 +244,152 @@
               </div>
             </div>
           </div>
+          
+        <!-- modal edit member-->
+        <div class="modal" id="edit{{loop.index}}" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Member</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                
+                <table border="2" width="100%">
+                  <form action="/members" method="post" id="myForm">
+                    <input type="hidden" name="cl_id" value="{{m.cl_id}}">
+                    <tr>
+                      <td >
+                    <div class="mb-3">
+                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id=cl_Fname" name="cl_Fname" placeholder="First Name" type="text" required>
+                    </div>
+                  </td>
+                  <td >
+                    <div class="mb-3">
+                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="cl_Lname" name="cl_Lname" placeholder="Last Name" type="text" required>
+                    </div>
+                  </td>
+                  </tr>
+                  <tr>
+                    <td >
+                    <div class="mb-3">
+                        <input class="form-control mx-auto w-auto" id="cl_num" name="cl_num" placeholder="Phone Number" type="tel" required>
+                    </div>
+                  </td>
+                  <td >
+                    <div class="mb-3">
+                        <input class="form-control mx-auto w-auto" id="cl_BD" name="cl_BD" placeholder="Birth Date" type="date" required>
+                    </div>
+                  </td>
+                  
+                  </tr>
+        
+                 
+                  <tr><td>
+                    <div class="mb-3">
+                      <p>Etudiant</p>
+                      <label>
+                        <input type="radio" name="student" value="Yes">
+                        Yes
+                    </label>
+                    <label>
+                        <input type="radio" name="student" value="No">
+                        No
+                    </label>
+                  </div>
+        
+                  </td></tr>
+                  <tr>
+                    <td colspan="2">
+                    
+                    </td>
+                  </tr>
+                
+              </table>
+              
+              <!-- edit membership-->
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Membership</h1>
+                
+              </div>
+                    <table border="2" width="100%">
+                      
+                        
+                        <tr>
+                          <td >
+                            
+                        <div class="mb-3">
+                          <label for="selectOption" id="label">Select a Sport:</label>
+                          <select class="form-control" id="sp_name" name="sp_name" >
+                            <option value="">˅</option>
+                            {% for s in sport %}
+                            
+                            <option value="{{s.sp_name}}" >{{s.sp_name}}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </td>
+                      <td >
+                        
+                        <div class="mb-3">
+                            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="m_type" name="m_type" placeholder="Membership Type" type="text" >
+                        </div>
+                      </td>
+                      </tr>
+                      <tr>
+                        <td >
+                        <div class="mb-3">
+                            <input class="form-control mx-auto w-auto" id="duration" name="duration" placeholder="Duration" type="text" >
+                        </div>
+                      </td>
+                      <td >
+                        <div class="mb-3">
+                            <input class="form-control mx-auto w-auto" id="price" name="price" placeholder="Price" type="text" >
+                        </div>
+                      </td>
+                      <td >
+                        <div class="mb-3">
+                            <input class="form-control mx-auto w-auto" id="starts_at" name="starts_at" placeholder="Starts At" type="Date" >
+                        </div>
+                      </td>
+                      
+                      </tr>
+            
+                     
+                      <tr><td>
+                      
+                      </td></tr>
+                      <tr>
+                        <td colspan="2">
+                        
+                        </td>
+                      </tr>
+                    
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Edits</button>
+                </div>
+              </form>
+              </div>
+              
+              
+            
+            </div>
+          </div>
+        </div>
+        
+        
+
         </td>
         
 
 
       </tr>
+      
       {% endfor %}
+      <!-- clients without membership-->
       {% for client in clients %}
       <tr>
         <td> {{client.cl_Fname}} {{client.cl_Lname}}</td>
@@ -255,8 +397,13 @@
         <td> {{client.cl_BD}}</td>
         <td> {{client.student}}</td>
         <td><span class="status-badge no_membership">No membership</span></td>
-        <td> <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#view{{loop.index}}" id="view">view</button>  <button type="button" class="custom-button" id="edit" >Edit</button>  <button type="button" id="delete" class="custom-button" >Delete</button></td>
-        <div class="modal fade" id="view{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <td> <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#view{{loop.index}}" id="view">view</button> 
+           <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#editc{{loop.index}}" id="edit" >Edit</button> 
+            <button type="button" id="delete" class="custom-button" >Delete</button>
+        <!--modal view-->
+
+
+            <div class="modal fade" id="view{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -277,14 +424,99 @@
                   
               </ul>
               <p>No Membership yet</p>
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="add_membership">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="" id="add_membership">
                 Add New Membership
               </button>
 
             </span>
+            </div>
+            </div>
+          </div>
+        </div>
+        <!--Model edit -->
+        <div class="modal" id="editc{{loop.index}}" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">+ Add Member</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                
+                <table border="2" width="100%">
+                  <form action="/members" method="post" id="myForm">
+                    <input type="hidden" name="cl_id" value="{{client.cl_id}}">
+                    <tr>
+                      <td >
+                    <div class="mb-3">
+                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id=cl_Fname" name="cl_Fname" placeholder="First Name" type="text" required>
+                    </div>
+                  </td>
+                  <td >
+                    <div class="mb-3">
+                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="cl_Lname" name="cl_Lname" placeholder="Last Name" type="text" required>
+                    </div>
+                  </td>
+                  </tr>
+                  <tr>
+                    <td >
+                    <div class="mb-3">
+                        <input class="form-control mx-auto w-auto" id="cl_num" name="cl_num" placeholder="Phone Number" type="tel" required>
+                    </div>
+                  </td>
+                  <td >
+                    <div class="mb-3">
+                        <input class="form-control mx-auto w-auto" id="cl_BD" name="cl_BD" placeholder="Birth Date" type="date" required>
+                    </div>
+                  </td>
+                  
+                  </tr>
+        
+                 
+                  <tr><td>
+                    <div class="mb-3">
+                      <p>Etudiant</p>
+                      <label>
+                        <input type="radio" name="student" value="Yes">
+                        Yes
+                    </label>
+                    <label>
+                        <input type="radio" name="student" value="No">
+                        No
+                    </label>
+                  </div>
+        
+                  </td></tr>
+                  <tr>
+                    <td colspan="2">
+                    
+                    </td>
+                  </tr>
+                
+              </table>
+              </div>
+              
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+              </form>
+              </div>
+              
+              
+            
+            </div>
+          </div>
+        </div>
+        
+         
+      </td>
+        </tr>
+        
+        
 
-      </tr>
-
+            
+          
       {% endfor %}
       
     </tbody>
