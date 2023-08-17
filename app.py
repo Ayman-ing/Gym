@@ -145,18 +145,23 @@ def members():
     moment = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     #getting necessary informations 
+    sport=db.execute("select sp_name from sport;")
     member=db.execute("select * from member;")
-    clients=db.execute("select cl_Fname,cl_Lname,cl_num,cl_BD,student from client where cl_id NOT IN (SELECT cl_id from membership) ;")
-    
+    clients=db.execute("select cl_id,cl_Fname,cl_Lname,cl_num,cl_BD,student from client where cl_id NOT IN (SELECT cl_id from membership) ;")
+    for m in member:
+        if moment  >= m["ends_at"]:
+            m["status"]="inactive"
+        else:
+            m["status"]="active"
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         #checking the validty of the phone number
         if (not request.form.get("cl_num").isnumeric()) or len(request.form.get("cl_num"))<8:
-            return render_template('members.html', message1="phone number invalid",member=member,moment=moment,clients=clients)
+            return render_template('members.html', message1="phone number invalid",member=member,moment=moment,clients=clients,sport=sport)
         #checking the phone number already exist
         number=db.execute("select cl_Fname from client where cl_num=?;",request.form.get("cl_num"))
         if len(number)>0:
-            return render_template('members.html', message3="phone number already exist",member=member,moment=moment,clients=clients)
+            return render_template('members.html', message3="phone number already exist",member=member,moment=moment,clients=clients,sport=sport)
         #adding the member to the table
         db.execute(
                 "insert into client (cl_Fname,cl_Lname,cl_num,cl_BD,student) values(?,?,?,?,?)",
@@ -168,15 +173,15 @@ def members():
 
             )
         
-
+        #adding the membership
         if (not request.form.get("sp_name")) and (not request.form.get("m_type"))  and  (not request.form.get("duration")) and (not request.form.get("price")) and (not request.form.get("starts_at")):    
-            return render_template('members.html',message2="member added successfuly",member=member,moment=moment,clients=clients)
+            return render_template('members.html',message2="member added successfuly",member=member,moment=moment,clients=clients,sport=sport)
         if (not request.form.get("sp_name")) or (not request.form.get("m_type"))  or  (not request.form.get("duration")) or (not request.form.get("price")) or (not request.form.get("starts_at")):
-            return render_template('members.html',message6="member added successfuly ",message4="No membership added ! Not enough informations",member=member,moment=moment,clients=clients)
+            return render_template('members.html',message6="member added successfuly ",message4="No membership added ! Not enough informations",member=member,moment=moment,clients=clients,sport=sport)
         cl_id=db.execute("select cl_id from client where cl_num=?",int(request.form.get("cl_num")))
         sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
         db.execute(
-                "insert into membership (cl_id,sp_id,m_type,duration,price,starts_at,ends_at,m_status,benefits) values(?,?,?,?,?,?,date(?,'+' || ? || ' months'),?,?)",
+                "insert into membership (cl_id,sp_id,m_type,duration,price,starts_at,ends_at) values(?,?,?,?,?,?,date(?,'+' || ? || ' months'))",
                 cl_id[0]["cl_id"],
                 sp_id[0]["sp_id"],
                 request.form.get("m_type"),
@@ -185,11 +190,11 @@ def members():
                 request.form.get("starts_at"),
                 request.form.get("starts_at"),
                 int(request.form.get("duration")),
-                'NULL','NULL'
+                
                 )
-        return render_template('members.html',message5="member and his membership added successfuly",member=member,moment=moment,clients=clients)
+        return render_template('members.html',message5="member and his membership added successfuly",member=member,moment=moment,clients=clients,sport=sport)
         
         
     else:
             
-        return render_template('members.html',member=member,moment=moment,clients=clients)
+        return render_template('members.html',member=member,moment=moment,clients=clients,sport=sport)

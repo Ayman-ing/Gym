@@ -188,13 +188,11 @@
       <td> {{m.cl_num}}</td>
       <td> {{m.cl_BD}}</td>
       <td> {{m.student}}</td>
-      <td>
-            {% if  moment  > m.ends_at %}
-                <p>unactive</p>
-            {% else %}
-                <p>active</p>
-                
-            {% endif %}
+      <td >{% if m.status=="active" %}
+        <span class="status-badge active-badge">{{m.status}}</span>
+          {% else %}
+          <span class="status-badge inactive-badge">{{m.status}}</span>
+          {% endif %}
           
           
       </td>
@@ -228,12 +226,18 @@
               <h5 class="title">Membership Plan</h5>
               <table  id="member_detail">
                 <tr><td>Sport</td><td>Type</td><td>start</td><td>end</td><td>status</td></tr>
-                <tr><td>{{m.sp_name}}</td><td>{{m.m_type}}</td><td>{{m.starts_at}}</td><td>{{m.ends_at}}</td><td></td></tr>
+                <tr><td>{{m.sp_name}}</td><td>{{m.m_type}}</td><td>{{m.starts_at}}</td><td>{{m.ends_at}}</td><td>{% if m.status=="active" %}
+                  <span class="status-badge active-badge">{{m.status}}</span>
+                    {% else %}
+                    <span class="status-badge inactive-badge">{{m.status}}</span>
+                    {% endif %}
+                    </span>
+                  </td></tr>
               </table>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+                  
                 </div>
               </div>
             </div>
@@ -250,8 +254,35 @@
         <td> {{client.cl_num}}</td>
         <td> {{client.cl_BD}}</td>
         <td> {{client.student}}</td>
-        <td>No membership</td>
-        <td> <button type="button" class="custom-button" id="view">view</button>  <button type="button" class="custom-button" id="edit" >Edit</button>  <button type="button" id="delete" class="custom-button" >Delete</button></td>
+        <td><span class="status-badge no_membership">No membership</span></td>
+        <td> <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#view{{loop.index}}" id="view">view</button>  <button type="button" class="custom-button" id="edit" >Edit</button>  <button type="button" id="delete" class="custom-button" >Delete</button></td>
+        <div class="modal fade" id="view{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Member Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                 
+                </button>
+              </div>
+              <div class="modal-body">
+                <span id="content">
+                <ul>
+                  
+                <li>Name :{{client.cl_Fname}} {{client.cl_Lname}}</li>
+                 
+                <li>Phone number : {{client.cl_num}}</li>
+                  <li>Birth Date: {{client.cl_BD}}</li>
+                    <li>Student ? : {{client.student}}</li>
+                  
+              </ul>
+              <p>No Membership yet</p>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="add_membership">
+                Add New Membership
+              </button>
+
+            </span>
+
       </tr>
 
       {% endfor %}

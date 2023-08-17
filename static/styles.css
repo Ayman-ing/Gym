@@ -116,3 +116,34 @@ span > ul
     text-align:left;   
     
 }
+/* Badge Styles */
+.status-badge {
+    
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    
+  }
+  
+ 
+  .active-badge {
+    background-color:green;
+    color: rgb(226, 226, 226);
+  }
+  .inactive-badge {
+    background-color: rgb(199, 35, 35);
+    color: rgb(226, 226, 226);
+  }
+ .no_membership
+ {
+    background-color: rgb(176, 172, 172);
+    color: rgb(0, 0, 0);
+ }
+ #add_membership
+{
+   
+    margin-bottom: 3%;
+    
+   
+}
