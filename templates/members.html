@@ -198,10 +198,48 @@
           
           
       </td>
-      <td> <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="view">view</button>  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="edit" >Edit</button>  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="delete" >Delete</button></td>
-      
-
-
+      <td> <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#viewModal{{loop.index}}" id="view">view</button> 
+         <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#exampleModal" id="edit" >Edit</button> 
+          <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#exampleModal" id="delete" >Delete</button>
+        
+          
+          <!-- Modal -->
+          <div class="modal fade" id="viewModal{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">Member Details</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                   
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <span id="content">
+                  <ul>
+                    
+                  <li>Name :{{m.cl_Fname}} {{m.cl_Lname}}</li>
+                   
+                  <li>Phone number : {{m.cl_num}}</li>
+                    <li>Birth Date: {{m.cl_BD}}</li>
+                      <li>Student ? : {{m.student}}</li>
+                    
+                </ul>
+              </span>
+              <h5 class="title">Membership Plan</h5>
+              <table  id="member_detail">
+                <tr><td>Sport</td><td>Type</td><td>start</td><td>end</td><td>status</td></tr>
+                <tr><td>{{m.sp_name}}</td><td>{{m.m_type}}</td><td>{{m.starts_at}}</td><td>{{m.ends_at}}</td><td></td></tr>
+              </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+        
 
 
       </tr>
