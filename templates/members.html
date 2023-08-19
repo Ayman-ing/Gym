@@ -12,11 +12,12 @@
 
 </div>
 {% endif %}
-{% if message2 or message5 or message6 %}
+{% if message2 or message5 or message6 or message7 %}
 <div class="alert alert-success" role="alert">
   {{message2}}
   {{message5}}
   {{message6}}
+  {{message7}}
 </div>
 {% endif %}
 <h2>MEMBERS LIST</h2>
@@ -38,7 +39,8 @@
         
         <table border="2" width="100%">
           <form action="/members" method="post" id="myForm">
-            <input type="hidden" name="cl_id" value="">
+          
+            <input type="hidden" name="form_id" value="form1">
             <tr>
               <td >
             <div class="mb-3">
@@ -184,6 +186,7 @@
       </tr>
     </thead>
     <tbody>
+      <!--looping for members who had membership-->
       {% for m in member %}
       <tr>
       <td> {{m.cl_Fname}} {{m.cl_Lname}}</td>
@@ -227,8 +230,8 @@
               </span>
               <h5 class="title">Membership Plan</h5>
               <table  id="member_detail">
-                <tr><td>Sport</td><td>Type</td><td>start</td><td>end</td><td>status</td></tr>
-                <tr><td>{{m.sp_name}}</td><td>{{m.m_type}}</td><td>{{m.starts_at}}</td><td>{{m.ends_at}}</td><td>{% if m.status=="active" %}
+                <tr><td>Sport</td><td>Type</td><td>start</td><td>end</td><td>duration</td><td>Price</td><td>status</td></tr>
+                <tr><td>{{m.sp_name}}</td><td>{{m.m_type}}</td><td>{{m.starts_at}}</td><td>{{m.ends_at}}</td><td>{{m.duration}}</td><td>{{m.price}}</td><td>{% if m.status=="active" %}
                   <span class="status-badge active-badge">{{m.status}}</span>
                     {% else %}
                     <span class="status-badge inactive-badge">{{m.status}}</span>
@@ -250,7 +253,7 @@
           <div class="modal-dialog modal-xl">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Member</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Member : {{m.cl_Fname}} {{m.cl_Lname}}</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -258,27 +261,32 @@
                 <table border="2" width="100%">
                   <form action="/members" method="post" id="myForm">
                     <input type="hidden" name="cl_id" value="{{m.cl_id}}">
+                    <input type="hidden" name="m_id" value="{{m.m_id}}">
+                    <input type="hidden" name="sp_id" value="{{m.sp_id}}">
+                    <input type="hidden" name="form_id" value="form2m">
+
+                    
                     <tr>
                       <td >
                     <div class="mb-3">
-                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id=cl_Fname" name="cl_Fname" placeholder="First Name" type="text" required>
+                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id=cl_Fname" name="cl_Fname" placeholder="First Name" type="text" >
                     </div>
                   </td>
                   <td >
                     <div class="mb-3">
-                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="cl_Lname" name="cl_Lname" placeholder="Last Name" type="text" required>
+                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="cl_Lname" name="cl_Lname" placeholder="Last Name" type="text" >
                     </div>
                   </td>
                   </tr>
                   <tr>
                     <td >
                     <div class="mb-3">
-                        <input class="form-control mx-auto w-auto" id="cl_num" name="cl_num" placeholder="Phone Number" type="tel" required>
+                        <input class="form-control mx-auto w-auto" id="cl_num" name="cl_num" placeholder="Phone Number" type="tel" >
                     </div>
                   </td>
                   <td >
                     <div class="mb-3">
-                        <input class="form-control mx-auto w-auto" id="cl_BD" name="cl_BD" placeholder="Birth Date" type="date" required>
+                        <input class="form-control mx-auto w-auto" id="cl_BD" name="cl_BD" placeholder="Birth Date" type="date" >
                     </div>
                   </td>
                   
@@ -339,7 +347,7 @@
                       <tr>
                         <td >
                         <div class="mb-3">
-                            <input class="form-control mx-auto w-auto" id="duration" name="duration" placeholder="Duration" type="text" >
+                            <input class="form-control mx-auto w-auto" id="duration" name="duration" placeholder="Duration" type="text" value="{{m.duration}}">
                         </div>
                       </td>
                       <td >
@@ -349,7 +357,7 @@
                       </td>
                       <td >
                         <div class="mb-3">
-                            <input class="form-control mx-auto w-auto" id="starts_at" name="starts_at" placeholder="Starts At" type="Date" >
+                            <input class="form-control mx-auto w-auto" id="starts_at" name="starts_at" placeholder="Starts At" type="Date" value="{{m.starts_at}}">
                         </div>
                       </td>
                       
@@ -438,7 +446,7 @@
           <div class="modal-dialog modal-xl">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">+ Add Member</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Member : {{client.cl_Fname}} {{client.cl_Lname}}</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -446,27 +454,29 @@
                 <table border="2" width="100%">
                   <form action="/members" method="post" id="myForm">
                     <input type="hidden" name="cl_id" value="{{client.cl_id}}">
+                    <input type="hidden" name="form_id" value="form2cl">
+
                     <tr>
                       <td >
                     <div class="mb-3">
-                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id=cl_Fname" name="cl_Fname" placeholder="First Name" type="text" required>
+                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id=cl_Fname" name="cl_Fname" placeholder="First Name" type="text" >
                     </div>
                   </td>
                   <td >
                     <div class="mb-3">
-                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="cl_Lname" name="cl_Lname" placeholder="Last Name" type="text" required>
+                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="cl_Lname" name="cl_Lname" placeholder="Last Name" type="text" >
                     </div>
                   </td>
                   </tr>
                   <tr>
                     <td >
                     <div class="mb-3">
-                        <input class="form-control mx-auto w-auto" id="cl_num" name="cl_num" placeholder="Phone Number" type="tel" required>
+                        <input class="form-control mx-auto w-auto" id="cl_num" name="cl_num" placeholder="Phone Number" type="tel" >
                     </div>
                   </td>
                   <td >
                     <div class="mb-3">
-                        <input class="form-control mx-auto w-auto" id="cl_BD" name="cl_BD" placeholder="Birth Date" type="date" required>
+                        <input class="form-control mx-auto w-auto" id="cl_BD" name="cl_BD" placeholder="Birth Date" type="date" >
                     </div>
                   </td>
                   
@@ -498,7 +508,7 @@
               
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Add</button>
+                  <button type="submit" class="btn btn-primary">Edit</button>
                 </div>
               </form>
               </div>

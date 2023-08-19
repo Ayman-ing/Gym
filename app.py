@@ -142,7 +142,55 @@ def logout():
     return redirect("/")
 @app.route("/members", methods=["GET", "POST"])
 def members():
+    def edit():
+        def edit_cl():
+            if request.form.get("cl_num"):   
+                #checking the phone number already exist
+                num=db.execute("select cl_Fname from client where cl_num=?;",request.form.get("cl_num"))
+                if len(num)>0:
+                    return render_template('members.html', message3="phone number already exist",member=member,moment=moment,clients=clients,sport=sport)
+                #checking the validty of the phone number
+                if (not request.form.get("cl_num").isnumeric()) or len(request.form.get("cl_num"))<8:
+                    return render_template('members.html', message1="phone number invalid",member=member,moment=moment,clients=clients,sport=sport)
+            dict_m={"cl_Fname":request.form.get("cl_Fname"),"cl_Lname":request.form.get("cl_Lname"),"cl_BD":request.form.get("cl_BD"),
+                    "cl_num":request.form.get("cl_num"),"student":request.form.get("student")}
+            for key,value in dict_m.items():
+                if value:
+                    db.execute("UPDATE client set ?=? where cl_id=?",key,value,int(request.form.get("cl_id")))
+            
+        def edit_m():
+            result=edit_cl()
+        
+            if result is None :
+                dict_msh={"m_type":request.form.get("m_type"),"duration":request.form.get("duration"),"price":request.form.get("price")}
+                
+                #"sp_name"
+                if request.form.get("sp_name"):
+                    sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
+                    db.execute("update membership set sp_id=? where m_id=?",sp_id[0]["sp_id"],int(request.form.get("m_id")))
+                    
+                if request.form.get("starts_at") or request.form.get("duration"):
+                    db.execute("UPDATE membership set starts_at=? ,ends_at=date(?,'+' || ? || ' months') where m_id=?",request.form.get("starts_at"),request.form.get("starts_at"),int(request.form.get("duration")),int(request.form.get("m_id")))
+                
+                for key,value in dict_msh.items():
+                    if value:
+                        db.execute("UPDATE membership set ?=? where m_id=?",key,value,int(request.form.get("m_id")))
+                return render_template("members.html",message7="changes made successfuly",member=member,moment=moment,clients=clients,sport=sport)
+            else :
+                return result       
+        if request.form.get("form_id") =="form2m":
+            return edit_m()
+        elif request.form.get("form_id") =="form2cl":
+            result2=edit_cl()
+            if result2 is None:
+                return render_template("members.html",message7="changes made successfuly",member=member,moment=moment,clients=clients,sport=sport)
+            else :
+                return result2
+    
     def add():
+        #checking the validty of the phone number
+        if (not request.form.get("cl_num").isnumeric()) or len(request.form.get("cl_num"))<8:
+            return render_template('members.html', message1="phone number invalid",member=member,moment=moment,clients=clients,sport=sport)
         #checking the phone number already exist
         number=db.execute("select cl_Fname from client where cl_num=?;",request.form.get("cl_num"))
         if len(number)>0:
@@ -191,13 +239,11 @@ def members():
             m["status"]="active"
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        #checking the validty of the phone number
-        if (not request.form.get("cl_num").isnumeric()) or len(request.form.get("cl_num"))<8:
-            return render_template('members.html', message1="phone number invalid",member=member,moment=moment,clients=clients,sport=sport)
-        #checking if it's an adding or an edit
-        if not request.form.get("cl_id"):
+        
+        #checking if it's an adding,edit or a delete
+        if  request.form.get("form_id")=="form1":
             return add()
-        else:
+        elif "form2" in request.form.get("form_id") :
             return edit()
         
         
