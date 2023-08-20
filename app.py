@@ -142,6 +142,9 @@ def logout():
     return redirect("/")
 @app.route("/members", methods=["GET", "POST"])
 def members():
+    def delete():
+        db.execute("delete from client where cl_id=?",int(request.form.get("cl_id")))
+        return render_template("members.html",message8="member deleted succssefuly",member=member,moment=moment,clients=clients,sport=sport)
     def edit():
         def edit_cl():
             if request.form.get("cl_num"):   
@@ -188,44 +191,71 @@ def members():
                 return result2
     
     def add():
-        #checking the validty of the phone number
-        if (not request.form.get("cl_num").isnumeric()) or len(request.form.get("cl_num"))<8:
-            return render_template('members.html', message1="phone number invalid",member=member,moment=moment,clients=clients,sport=sport)
-        #checking the phone number already exist
-        number=db.execute("select cl_Fname from client where cl_num=?;",request.form.get("cl_num"))
-        if len(number)>0:
-            return render_template('members.html', message3="phone number already exist",member=member,moment=moment,clients=clients,sport=sport)
-        #adding the member to the table
-        db.execute(
-                "insert into client (cl_Fname,cl_Lname,cl_num,cl_BD,student) values(?,?,?,?,?)",
-                request.form.get("cl_Fname"),
-                request.form.get("cl_Lname"),
-                int(request.form.get("cl_num")),
-                request.form.get("cl_BD"),
-                request.form.get("student") 
+        def add_cl():
+            #checking the validty of the phone number
+            if (not request.form.get("cl_num").isnumeric()) or len(request.form.get("cl_num"))<8:
+                return render_template('members.html', message1="phone number invalid",member=member,moment=moment,clients=clients,sport=sport)
+            #checking the phone number already exist
+            number=db.execute("select cl_Fname from client where cl_num=?;",request.form.get("cl_num"))
+            if len(number)>0:
+                return render_template('members.html', message3="phone number already exist",member=member,moment=moment,clients=clients,sport=sport)
+            #adding the member to the table
+            db.execute(
+                    "insert into client (cl_Fname,cl_Lname,cl_num,cl_BD,student) values(?,?,?,?,?)",
+                    request.form.get("cl_Fname"),
+                    request.form.get("cl_Lname"),
+                    int(request.form.get("cl_num")),
+                    request.form.get("cl_BD"),
+                    request.form.get("student") 
 
-            )
-        
-        #adding the membership
-        if (not request.form.get("sp_name")) and (not request.form.get("m_type"))  and  (not request.form.get("duration")) and (not request.form.get("price")) and (not request.form.get("starts_at")):    
-            return render_template('members.html',message2="member added successfuly",member=member,moment=moment,clients=clients,sport=sport)
-        if (not request.form.get("sp_name")) or (not request.form.get("m_type"))  or  (not request.form.get("duration")) or (not request.form.get("price")) or (not request.form.get("starts_at")):
-            return render_template('members.html',message6="member added successfuly ",message4="No membership added ! Not enough informations",member=member,moment=moment,clients=clients,sport=sport)
-        cl_id=db.execute("select cl_id from client where cl_num=?",int(request.form.get("cl_num")))
-        sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
-        db.execute(
-                "insert into membership (cl_id,sp_id,m_type,duration,price,starts_at,ends_at) values(?,?,?,?,?,?,date(?,'+' || ? || ' months'))",
-                cl_id[0]["cl_id"],
-                sp_id[0]["sp_id"],
-                request.form.get("m_type"),
-                int(request.form.get("duration")),
-                int(request.form.get("price")),
-                request.form.get("starts_at"),
-                request.form.get("starts_at"),
-                int(request.form.get("duration")),
-                
                 )
-        return render_template('members.html',message5="member and his membership added successfuly",member=member,moment=moment,clients=clients,sport=sport)
+        def add_m():
+            
+            #adding the membership
+            if (not request.form.get("sp_name")) and (not request.form.get("m_type"))  and  (not request.form.get("duration")) and (not request.form.get("price")) and (not request.form.get("starts_at")):    
+                return render_template('members.html',message2="member added successfuly",member=member,moment=moment,clients=clients,sport=sport)
+            if (not request.form.get("sp_name")) or (not request.form.get("m_type"))  or  (not request.form.get("duration")) or (not request.form.get("price")) or (not request.form.get("starts_at")):
+                return render_template('members.html',message6="member added successfuly ",message4="No membership added ! Not enough informations",member=member,moment=moment,clients=clients,sport=sport)
+            if not request.form.get("cl_id"):
+                cl_id=db.execute("select cl_id from client where cl_num=?",int(request.form.get("cl_num")))
+            else:
+                cl_id=[{}]
+                cl_id[0]["cl_id"]=request.form.get("cl_id")
+            sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
+            db.execute(
+                    "insert into membership (cl_id,sp_id,m_type,duration,price,starts_at,ends_at) values(?,?,?,?,?,?,date(?,'+' || ? || ' months'))",
+                    cl_id[0]["cl_id"],
+                    sp_id[0]["sp_id"],
+                    request.form.get("m_type"),
+                    int(request.form.get("duration")),
+                    int(request.form.get("price")),
+                    request.form.get("starts_at"),
+                    request.form.get("starts_at"),
+                    int(request.form.get("duration")),
+                    
+                    )
+            
+        #checking if it's adding a membership only all full information
+        if request.form.get("form_id") =="form1cl":
+            result1=add_m()
+            if result1 is None:
+
+                return render_template('members.html',message5="membership added successfuly",member=member,moment=moment,clients=clients,sport=sport)
+            else:
+                return result1
+        elif request.form.get("form_id") =="form1m": 
+            result2=add_cl()
+            if result2 is None :
+                result3=add_m()
+                if result3 is None:
+                    return render_template('members.html',message5="member and his membership added successfuly",member=member,moment=moment,clients=clients,sport=sport)
+                else:
+                    return result3
+            else:
+                return result2
+    
+    
+    
     moment = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     #getting necessary informations 
@@ -241,10 +271,13 @@ def members():
     if request.method == "POST":
         
         #checking if it's an adding,edit or a delete
-        if  request.form.get("form_id")=="form1":
+        if "form1" in request.form.get("form_id"):
             return add()
         elif "form2" in request.form.get("form_id") :
             return edit()
+        elif request.form.get("form_id")=="form3" :
+            return delete()
+            
         
         
         
