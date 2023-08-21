@@ -142,7 +142,9 @@ def logout():
     return redirect("/")
 @app.route("/members", methods=["GET", "POST"])
 def members():
+    #the delete function
     def delete():
+        #checking if it's deleting a member or a membership
         if request.form.get("form_id")=="form3cl" :
             db.execute("delete from client where cl_id=?",int(request.form.get("cl_id")))
             return render_template("members.html",message8="member deleted succssefuly",member=member,moment=moment,clients=clients,sport=sport)
@@ -150,8 +152,9 @@ def members():
             db.execute("delete from membership where cl_id=?",int(request.form.get("cl_id")))
             return render_template("members.html",message8="membership deleted succssefuly",member=member,moment=moment,clients=clients,sport=sport)
 
-
+    #the edit function
     def edit():
+        #the client editing function
         def edit_cl():
             if request.form.get("cl_num"):   
                 #checking the phone number already exist
@@ -166,7 +169,7 @@ def members():
             for key,value in dict_m.items():
                 if value:
                     db.execute("UPDATE client set ?=? where cl_id=?",key,value,int(request.form.get("cl_id")))
-            
+        #the membership editing function    
         def edit_m():
             result=edit_cl()
         
@@ -187,6 +190,7 @@ def members():
                 return render_template("members.html",message7="changes made successfuly",member=member,moment=moment,clients=clients,sport=sport)
             else :
                 return result       
+        #checking whether it's editing a client or a client and membership
         if request.form.get("form_id") =="form2m":
             return edit_m()
         elif request.form.get("form_id") =="form2cl":
@@ -195,8 +199,9 @@ def members():
                 return render_template("members.html",message7="changes made successfuly",member=member,moment=moment,clients=clients,sport=sport)
             else :
                 return result2
-    
+    #add function
     def add():
+        #adding client
         def add_cl():
             #checking the validty of the phone number
             if (not request.form.get("cl_num").isnumeric()) or len(request.form.get("cl_num"))<8:
@@ -215,6 +220,7 @@ def members():
                     request.form.get("student") 
 
                 )
+        #adding membership
         def add_m():
             
             #adding the membership
@@ -241,7 +247,7 @@ def members():
                     
                     )
             
-        #checking if it's adding a membership only all full information
+        #checking whether it's adding a membership only or  all full information
         if request.form.get("form_id") =="form1cl":
             result1=add_m()
             if result1 is None:
@@ -287,7 +293,7 @@ def members():
         
         
         
-        
+    #user reached route via GET    
     else:
             
         return render_template('members.html',member=member,moment=moment,clients=clients,sport=sport)
