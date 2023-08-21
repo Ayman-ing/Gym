@@ -55,6 +55,7 @@ h2
     display: inline-block;
     font-size: 16px;
     border-radius: 4px;
+    margin-right:1%;
 
     
 }
@@ -124,6 +125,7 @@ span > ul
     font-size: 14px;
     font-weight: bold;
     
+    
   }
   
  
@@ -144,15 +146,33 @@ span > ul
 {
    
     margin-bottom: 3%;
+    margin-left:100%;
     
    
 }
 #add_n_m
 {
-    width: 40%;
+    width: 50%;
     
     padding: 5px 10px;
-    border-radius: 20px;
+    border-radius: 15px;
     font-size: 14px;
     font-weight: bold;
+    text-align:left;
+}
+#deletem
+{
+    border: 2px solid #ff0000;
+    
+    
+}
+#buttons
+{
+    margin-left:0%;
+    text-align:middle;
+}
+#no_m_buttons
+{
+    margin-left:-30.5%;
+    
 }

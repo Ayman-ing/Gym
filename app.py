@@ -143,8 +143,14 @@ def logout():
 @app.route("/members", methods=["GET", "POST"])
 def members():
     def delete():
-        db.execute("delete from client where cl_id=?",int(request.form.get("cl_id")))
-        return render_template("members.html",message8="member deleted succssefuly",member=member,moment=moment,clients=clients,sport=sport)
+        if request.form.get("form_id")=="form3cl" :
+            db.execute("delete from client where cl_id=?",int(request.form.get("cl_id")))
+            return render_template("members.html",message8="member deleted succssefuly",member=member,moment=moment,clients=clients,sport=sport)
+        else:
+            db.execute("delete from membership where cl_id=?",int(request.form.get("cl_id")))
+            return render_template("members.html",message8="membership deleted succssefuly",member=member,moment=moment,clients=clients,sport=sport)
+
+
     def edit():
         def edit_cl():
             if request.form.get("cl_num"):   
@@ -275,7 +281,7 @@ def members():
             return add()
         elif "form2" in request.form.get("form_id") :
             return edit()
-        elif request.form.get("form_id")=="form3" :
+        elif "form3" in request.form.get("form_id") :
             return delete()
             
         
