@@ -213,14 +213,14 @@ def members():
             
             #adding the membership
             if (not request.form.get("sp_name")) and (not request.form.get("m_type"))  and  (not request.form.get("duration")) and (not request.form.get("price")) and (not request.form.get("starts_at")):    
-                return render_template('members.html',message2="member added successfuly",member=member,moment=moment,clients=clients,sport=sport)
+                return "member added successfuly"
             if (not request.form.get("sp_name")) or (not request.form.get("m_type"))  or  (not request.form.get("duration")) or (not request.form.get("price")) or (not request.form.get("starts_at")):
-                return render_template('members.html',message6="member added successfuly ",message4="No membership added ! Not enough informations",member=member,moment=moment,clients=clients,sport=sport)
+                return "No membership added ! Not enough informations"
             if not request.form.get("cl_id"):
                 cl_id=db.execute("select cl_id from client where cl_num=?",int(request.form.get("cl_num")))
             else:
                 cl_id=[{}]
-                cl_id[0]["cl_id"]=request.form.get("cl_id")
+                cl_id[0]["cl_id"]=int(request.form.get("cl_id"))
             sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
             db.execute(
                     "insert into membership (cl_id,sp_id,m_type,duration,price,starts_at,ends_at) values(?,?,?,?,?,?,date(?,'+' || ? || ' months'))",
@@ -242,7 +242,7 @@ def members():
 
                 return render_template('members.html',message5="membership added successfuly",member=member,moment=moment,clients=clients,sport=sport)
             else:
-                return result1
+                return render_template("members.html",message3="No membership added ! Not enough informations",member=member,moment=moment,clients=clients,sport=sport)
         elif request.form.get("form_id") =="form1m": 
             result2=add_cl()
             if result2 is None :
@@ -250,7 +250,7 @@ def members():
                 if result3 is None:
                     return render_template('members.html',message5="member and his membership added successfuly",member=member,moment=moment,clients=clients,sport=sport)
                 else:
-                    return result3
+                    return render_template('members.html',message5="member added successfuly",message3="No membership added ! Not enough informations",member=member,moment=moment,clients=clients,sport=sport)
             else:
                 return result2
     

@@ -433,7 +433,7 @@
         <td> {{client.cl_num}}</td>
         <td> {{client.cl_BD}}</td>
         <td> {{client.student}}</td>
-        <td> <button type="button" id="add_n_m" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addmembership" id="add_membership">
+        <td> <button type="button" id="add_n_m" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addmembership{{loop.index}}" id="add_membership">
           Add 
         </button>
       <!-- Button trigger modal -->
@@ -441,7 +441,7 @@
 
 
 <!-- Modal add membership only -->
-<div class="modal fade" id="addmembership" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="addmembership{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
