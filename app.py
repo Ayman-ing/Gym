@@ -2,7 +2,7 @@ import os
 # pylint: disable=E0611
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session , url_for
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -10,6 +10,7 @@ from flask import redirect, render_template, session
 from functools import wraps
 from flask_moment import Moment
 import datetime
+import calendar
 def login_required(f):
     """
     Decorate routes to require login.
@@ -130,7 +131,7 @@ def register():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("register.html")
-
+@login_required
 @app.route("/logout")
 def logout():
     """Log user out"""
@@ -140,7 +141,9 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
+
 @app.route("/members", methods=["GET", "POST"])
+@login_required
 def members():
     #the delete function
     def delete():
@@ -297,3 +300,28 @@ def members():
     else:
             
         return render_template('members.html',member=member,moment=moment,clients=clients,sport=sport)
+def generate_calendar(year, month):
+        # Create a calendar for the specified year and month
+        cal = calendar.monthcalendar(year, month)
+        return cal
+@app.route("/schedule/<int:year>/<int:month>")
+@login_required
+def schedule(year,month):
+    
+    
+    cal=generate_calendar(year,month)
+    day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    events = {
+        '2023-08-15': 'Event 1',
+        '2023-08-20': 'Event 2',
+        # Add more events as needed
+    }
+    return render_template("schedule.html",cal=cal,day_names=day_names,month=month,year=year,events=events)
+
+@app.route('/schedule')
+@login_required
+def current_month_calendar():
+    now = datetime.datetime.now()
+    year = now.year
+    month = now.month
+    return redirect(url_for('schedule', year=year, month=month))

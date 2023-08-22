@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Schedule
+{% endblock %}
+{% block main %}
+<div class="btn-group" role="group" aria-label="Basic example">
+{% if month ==1 %}<button type="button" class="btn btn-secondary">
+<a href="{{ url_for('schedule', year=year-1, month=12) }}">Previous Month</a></button>
+{% else %}
+<button type="button" class="btn btn-secondary">
+<a href="{{ url_for('schedule', year=year, month=month-1) }}">Previous Month</a></button>
+{% endif %}
+{% if month==12 %}
+<button type="button" class="btn btn-secondary">
+<a href="{{ url_for('schedule', year=year+1, month=1) }}">Next Month    </a></button>
+{% else %}
+<button type="button" class="btn btn-secondary">
+     <a href="{{ url_for('schedule', year=year, month=month+1) }}">Next Month     </a></button>
+{% endif %}
+</div>
+<h5>{{month}} {{year}}</h5>
+
+  
+    
+  
+<table id="schedule" >
+    <tr>
+        
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
+    </tr>
+    {% for week in cal %}
+        <tr>
+            
+            {% for day in week %}
+                <td>
+                    {% if day != 0 %}
+                        <div class="date">{{ day }}</div>
+                        
+                        <ul id="events">
+                            {% for date,event in events.items() %}
+                                {% if date == '%04d-%02d-%02d' % (year,month,day) %}
+                                <li>{{event}}</li>
+                                
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
