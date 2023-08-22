@@ -193,12 +193,14 @@ span > ul
 table[id="schedule"] td, table[id="schedule"] th
 {
     width: 14.2857%;
-    border: 1px solid #ccc;
+    border: 1px solid #000000;
     
 }
 table[id="schedule"] td
 {
     height:150px;
+   background-color: #d3d3d3;
+   border:1px solid black;
 }
 .date
 {
@@ -207,6 +209,7 @@ table[id="schedule"] td
     width:30%;
     /*border:solid black;*/
     margin-bottom:100%;
+    color:black;
     
     
 }
@@ -219,6 +222,7 @@ table[id="schedule"] td
     padding-left:0%;
     margin-top: 30%;
     padding-top: 0%;
+    color:black;
 }
 ul[id="events"] li
 {
@@ -233,4 +237,28 @@ a{
 a:hover 
 {
     color:rgb(0, 213, 255);
+}
+#schedule_button
+{
+    float: none;
+    width:110%;
+    height:118%;
+    border: none;  
+
+
+   
+    background-color:#cfcfcf;
+  
+    
+}
+
+
+/* Add hover effect to the buttons */
+#schedule_button:hover {
+    background-color: #cdcdcd;
+}
+#event td
+{
+    background-color: white;
+   
 }

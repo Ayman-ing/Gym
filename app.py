@@ -316,7 +316,8 @@ def schedule(year,month):
         '2023-08-20': 'Event 2',
         # Add more events as needed
     }
-    return render_template("schedule.html",cal=cal,day_names=day_names,month=month,year=year,events=events)
+    sport=db.execute("select sp_name from sport;")
+    return render_template("schedule.html",cal=cal,day_names=day_names,month=month,year=year,events=events,sport=sport)
 
 @app.route('/schedule')
 @login_required
