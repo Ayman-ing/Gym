@@ -304,25 +304,56 @@ def generate_calendar(year, month):
         # Create a calendar for the specified year and month
         cal = calendar.monthcalendar(year, month)
         return cal
-@app.route("/schedule/<int:year>/<int:month>")
+@app.route("/schedule/<int:year>/<int:month>", methods=["GET", "POST"])
 @login_required
 def schedule(year,month):
     
-    
-    cal=generate_calendar(year,month)
-    day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    events = {
-        '2023-08-15': 'Event 1',
-        '2023-08-20': 'Event 2',
-        # Add more events as needed
-    }
-    sport=db.execute("select sp_name from sport;")
-    return render_template("schedule.html",cal=cal,day_names=day_names,month=month,year=year,events=events,sport=sport)
+    if request.method =="GET":
+        cal=generate_calendar(year,month)
+        events=db.execute("select sp_id,starts_at,ends_at,days,start_date,end_date from schedule;")
+        day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        current_events={}
+        for activity in events:
+            activity["sp_name"]=db.execute("select sp_name from sport where sp_id=?",activity["sp_id"])
+            start_month_condition=(int(activity["start_date"][0:4])==year and int(activity["start_date"][5:7])<=month)
+            start_year_condtion=int(activity["start_date"][0:4])<year
+            end_month_condition=(int(activity["end_date"][0:4])==year and int(activity["end_date"][5:7])>=month)
+            end_year_condition=int(activity["end_date"][0:4])>year
+            if (start_year_condtion or start_month_condition   )and (end_year_condition or end_month_condition ):
+                days=[day for day in activity["days"].split(",") if day]
+                
+                for week in cal:
+                    
+                    for day in range(7):
+                        if str(day) in days and week[day]!=0:
+                            formatted_date = '{:04d}-{:02d}-{:02d}'.format(year, month,week[day])
+                            current_events[formatted_date]=[activity["sp_name"][0]["sp_name"],activity["starts_at"],activity["ends_at"]]
+        sport=db.execute("select sp_name from sport;")
+        return render_template("schedule.html",cal=cal,start_month_condition=start_month_condition,month=month,year=year,current_events=current_events,sport=sport)
+    elif request.method=="POST":
+        sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
+        days=""
+        list=request.form.getlist("days[]")
+        for day in list:
+            days=days + day +","
+        db.execute("insert into schedule  (sp_id,starts_at,ends_at,repeat_pattern,days,start_date,end_date) values(?,?,?,?,?,?,?)",
+                    sp_id[0]["sp_id"],
+                    request.form.get("starts_at"),
+                    request.form.get("ends_at"),
+                    request.form.get("repeat_pattern"),
+                    days,
+                    request.form.get("start_date"),
+                    request.form.get("end_date"),
+                                        )
+        
+        date=request.form.get("event_date")
+        return render_template("index.html",year=year,month=month,date=date,days=days)
 
-@app.route('/schedule')
+@app.route('/schedule', methods=["GET", "POST"])
 @login_required
 def current_month_calendar():
-    now = datetime.datetime.now()
-    year = now.year
-    month = now.month
-    return redirect(url_for('schedule', year=year, month=month))
+    if request.method =="GET":
+        now = datetime.datetime.now()
+        year = now.year
+        month = now.month
+        return redirect(url_for('schedule', year=year, month=month))
