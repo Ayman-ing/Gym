@@ -59,9 +59,10 @@
                         <ul id="events">
                             {% for date,event in current_events.items() %}
                                 {% if date == '%04d-%02d-%02d' % (year,month,day) %}
-                                    {% for info in event %}    
-                                        <li>{{info}}</li>
-                                    {% endfor %}
+                                      
+                                        <li>{{event[0]}} : {{event[1]}}-{{event[2]}}</li>
+                                        
+                                    
                                 
                                 {% endif %}
                                 
