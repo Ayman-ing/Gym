@@ -307,6 +307,33 @@ def generate_calendar(year, month):
 @app.route("/schedule/<int:year>/<int:month>", methods=["GET", "POST"])
 @login_required
 def schedule(year,month):
+    def add(days):
+        #taking the sport id's from their names 
+        sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
+        
+        #inserting the event
+        db.execute("insert into schedule  (sp_id,starts_at,ends_at,repeat_pattern,days,start_date,end_date) values(?,?,?,?,?,?,?)",
+                    sp_id[0]["sp_id"],
+                    request.form.get("starts_at"),
+                    request.form.get("ends_at"),
+                    request.form.get("repeat_pattern"),
+                    days,
+                    request.form.get("start_date"),
+                    request.form.get("end_date"),
+                                        )
+    def edit(days):
+        
+        #putting the list of the days in a string
+       
+        dict_event={"sp_id":request.form.get("sp_id"),"starts_at":request.form.get("starts_at"),
+                    "end_at":request.form.get("ends_at"),"repeat_pattern":request.form.get("repeat_pattern"),
+                    "days":days,"start_date":request.form.get("start_date"),"end_date":request.form.get("end_date")
+        }
+        for key,value in dict_event.items():
+            if value:
+                db.execute("update schedule set ?=? where sc_id=?;",key,value,request.form.get("sc_id"))
+    def delete():
+        db.execute("delete from schedule where sc_id=?",request.form.get("sc_id"))
     
     if request.method =="GET":
         #getting the month calendar
@@ -340,7 +367,7 @@ def schedule(year,month):
                             if not (start_day_condition) and not (end_day_condition ):
                                 #putting the event date and info in the dictionarry
                                 formatted_date = '{:04d}-{:02d}-{:02d}'.format(year, month,week[day])
-                                current_events[formatted_date]=[activity["sp_name"][0]["sp_name"],activity["starts_at"],activity["ends_at"]]
+                                current_events[str(activity["sc_id"])+formatted_date]=[formatted_date,activity["sp_name"][0]["sp_name"],activity["starts_at"],activity["ends_at"]]
             #changing the numbers for their correspond days name
             week_days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
         
@@ -349,31 +376,27 @@ def schedule(year,month):
             for i in range(7):
                 if str(i) in activity["days"]:
                     days_output=days_output + week_days[i] + " "
-            activity["days"]=days_output
+            activity["days_output"]=days_output
             
         
         
         #taking all the sport for the form
-        sport=db.execute("select sp_name from sport;")
-        return render_template("schedule.html",events=events,cal=cal,start_month_condition=start_month_condition,month=month,year=year,current_events=current_events,sport=sport)
+        sport=db.execute("select sp_id,sp_name from sport;")
+        return render_template("schedule.html",events=events,cal=cal,start_month_condition=start_month_condition,month=month,year=year,current_events=current_events,sport=sport,week_days=week_days)
     elif request.method=="POST":
-        #taking the sport id's from their names 
-        sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
         days=""
         list=request.form.getlist("days[]")
         #putting the list of the days in a string
         for day in list:
             days=days + day +","
-        #inserting the event
-        db.execute("insert into schedule  (sp_id,starts_at,ends_at,repeat_pattern,days,start_date,end_date) values(?,?,?,?,?,?,?)",
-                    sp_id[0]["sp_id"],
-                    request.form.get("starts_at"),
-                    request.form.get("ends_at"),
-                    request.form.get("repeat_pattern"),
-                    days,
-                    request.form.get("start_date"),
-                    request.form.get("end_date"),
-                                        )
+        if request.form.get("form_id")=="formsch-add":
+            add(days)
+
+        elif request.form.get("form_id")=="formsch-edit":
+            edit(days)
+        elif request.form.get("form_id")=="formsch-delete":
+            delete()
+        
         
         date=request.form.get("event_date")
         events=db.execute("select * from schedule;")
@@ -387,7 +410,7 @@ def schedule(year,month):
                     days_output=days_output + week_days[i] + " "
             event["days"]=days_output
             event["sp_name"]=db.execute("select sp_name from sport where sp_id=?",event["sp_id"])
-        return render_template("index.html",year=year,month=month,date=date,days=days,events=events)
+        return render_template("index.html",year=year,month=month,date=date,days=days,events=events,week_days=week_days)
 
 @app.route('/schedule', methods=["GET", "POST"])
 @login_required
