@@ -7,7 +7,54 @@
 
 
 {% block main %}
+<!--view the events -->
+<div id="accordion">
+    <div class="card">
+      <div class="card-header" id="headingTwo">
+        <h5 class="mb-0">
+          <button id="add_m" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+           <h5>View Events</h5> 
+          </button>
+        </h5>
+      </div>
+      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+        <div class="card-body">
+            <table width="100%">
+                <thead>
+                    <tr>
+              
+                      <th scope="col">Sport</th>
+                      <th scope="col">Starting Time</th>
+                      <th scope="col">Ending Time</th>
+                      <th scope="col">Repeat Pattern</th>
+                      <th scope="col">Days Of Week</th>
+                      <th scope="col">Start Date</th>
+                      <th scope="col">End Date</th>
+              
+                       
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
 
+                        {% for event in events %}
+                        <tr>
+                            <td>{{event.sp_name[0].sp_name}}</td>
+                            <td>{{event.starts_at}}</td>
+                            <td>{{event.ends_at}}</td>
+                            <td>{{event.repeat_pattern}}</td>
+                            <td>{{event.days}}</td>
+                            <td>{{event.start_date}}</td>
+                            <td>{{event.end_date}}</td>
+                        </tr>
+                        {% endfor %}
+                  </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  
+  </div>
 
 <div class="btn-group" role="group" aria-label="Basic example">
 {% if month ==1 %}<button type="button" class="btn btn-secondary">
@@ -16,6 +63,7 @@
 <button type="button" class="btn btn-secondary">
 <a href="{{ url_for('schedule', year=year, month=month-1) }}">Previous Month</a></button>
 {% endif %}
+<button type="button" class="btn btn-secondary"><a href="{{ url_for('schedule', year=year, month=month) }}"> {{month}} {{year}}  </a></button></button>
 {% if month==12 %}
 <button type="button" class="btn btn-secondary">
 <a href="{{ url_for('schedule', year=year+1, month=1) }}">Next Month    </a></button>
@@ -24,7 +72,7 @@
      <a href="{{ url_for('schedule', year=year, month=month+1) }}">Next Month     </a></button>
 {% endif %}
 </div>
-<h5>{{month}} {{year}}</h5>
+
 
   
     
@@ -50,7 +98,9 @@
             {% for day in week %}
             
                 <td>
+                    
                     {% if day != 0 %}
+                    
                     <!-- Button trigger modal -->
                     <button id="schedule_button" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#event{{ day }}">
                      
@@ -68,6 +118,7 @@
                                 
                             {% endfor %}
                         </ul>
+                        
                     </button>
                     <!-- Modal -->
                     <div class="modal fade" id="event{{day}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -104,13 +155,13 @@
                                          <tr >
                                             <td >
                                             <div class="mb-3">
-                                              <label>Begin Hour <input autocomplete="off" autofocus class="form-control mx-auto w-auto" 
+                                              <label>Starting Time <input autocomplete="off" autofocus class="form-control mx-auto w-auto" 
                                                 id="starts_at" name="starts_at" placeholder="Begin Hour" type="time" required></label> 
                                             </div>
                                         </td>
                                         <td>
                                             <div class="mb-3">
-                                                <label>End Hour <input autocomplete="off" autofocus class="form-control mx-auto w-auto" 
+                                                <label>Ending Time<input autocomplete="off" autofocus class="form-control mx-auto w-auto" 
                                                 id="ends_at" name="ends_at" placeholder="End Hour" type="time" required></label> 
                                               </div>
 

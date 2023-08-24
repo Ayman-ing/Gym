@@ -312,7 +312,7 @@ def schedule(year,month):
         #getting the month calendar
         cal=generate_calendar(year,month)
         #getting the events 
-        events=db.execute("select sp_id,starts_at,ends_at,days,start_date,end_date from schedule;")
+        events=db.execute("select * from schedule;")
         current_events={}
         #iterating for each event in this month
         for activity in events:
@@ -341,12 +341,21 @@ def schedule(year,month):
                                 #putting the event date and info in the dictionarry
                                 formatted_date = '{:04d}-{:02d}-{:02d}'.format(year, month,week[day])
                                 current_events[formatted_date]=[activity["sp_name"][0]["sp_name"],activity["starts_at"],activity["ends_at"]]
+            #changing the numbers for their correspond days name
+            week_days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
         
+            days_output=""
+            
+            for i in range(7):
+                if str(i) in activity["days"]:
+                    days_output=days_output + week_days[i] + " "
+            activity["days"]=days_output
+            
         
         
         #taking all the sport for the form
         sport=db.execute("select sp_name from sport;")
-        return render_template("schedule.html",cal=cal,start_month_condition=start_month_condition,month=month,year=year,current_events=current_events,sport=sport)
+        return render_template("schedule.html",events=events,cal=cal,start_month_condition=start_month_condition,month=month,year=year,current_events=current_events,sport=sport)
     elif request.method=="POST":
         #taking the sport id's from their names 
         sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
@@ -367,7 +376,18 @@ def schedule(year,month):
                                         )
         
         date=request.form.get("event_date")
-        return render_template("index.html",year=year,month=month,date=date,days=days)
+        events=db.execute("select * from schedule;")
+        #changing the numbers for their correspond days name
+        week_days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+        for event in events:
+            days_output=""
+            
+            for i in range(7):
+                if str(i) in event["days"]:
+                    days_output=days_output + week_days[i] + " "
+            event["days"]=days_output
+            event["sp_name"]=db.execute("select sp_name from sport where sp_id=?",event["sp_id"])
+        return render_template("index.html",year=year,month=month,date=date,days=days,events=events)
 
 @app.route('/schedule', methods=["GET", "POST"])
 @login_required
