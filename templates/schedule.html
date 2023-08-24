@@ -49,8 +49,9 @@
                             <td>{{event.end_date}}</td>
                             <!--edit-->
                             <td>
+                            {% if event.days %}
                                 <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#edit{{loop.index}}" id="edit" >Edit</button> 
-                                <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#delete{{loop.index}}" id="delete" >Delete</button>
+                                
                             <!-- Modal edit-->
                     <div class="modal fade" id="edit{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                         <!-- Modal edit -->
@@ -111,6 +112,7 @@
                                                 <label for="inputField">Days of week:</label>
                                                 <br>
                                                 <!--making the default values checked-->
+                                                {% if event.days %}
                                                 {% for i in range(7) %}
                                                     {% if  i | string in event.days %}
                                                     <label>
@@ -124,7 +126,14 @@
                                                     </label>
                                                     {% endif %}
                                                 {% endfor %}
-                                             
+                                                {% else %}
+                                                {% for i in range(7) %}
+                                                <label>
+                                                    <input type="checkbox" name="days[]" value="{{i}}" >
+                                                    {{week_days[i]}}
+                                                </label>
+                                                {% endfor %}
+                                                {% endif %}
                                             </div></td></tr>
                                             <tr>
                                                 <td>   
@@ -154,6 +163,8 @@
                             </div>
                           </div>
                     </div>
+                    {% endif %}
+                    <button type="button" class="custom-button"  data-bs-toggle="modal" data-bs-target="#delete{{loop.index}}" id="delete" >Delete</button>
                     <!--model delete event-->
  <div class="modal fade" id="delete{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

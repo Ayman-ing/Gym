@@ -308,19 +308,32 @@ def generate_calendar(year, month):
 @login_required
 def schedule(year,month):
     def add(days):
+        
+
         #taking the sport id's from their names 
         sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
         
-        #inserting the event
-        db.execute("insert into schedule  (sp_id,starts_at,ends_at,repeat_pattern,days,start_date,end_date) values(?,?,?,?,?,?,?)",
+        if request.form.get("repeat_pattern")=="irregular":
+            #inserting the event only in the day clicked
+            db.execute("insert into schedule  (sp_id,starts_at,ends_at,repeat_pattern,days,start_date,end_date) values(?,?,?,?,?,?,?)",
                     sp_id[0]["sp_id"],
                     request.form.get("starts_at"),
                     request.form.get("ends_at"),
                     request.form.get("repeat_pattern"),
                     days,
-                    request.form.get("start_date"),
-                    request.form.get("end_date"),
+                    request.form.get("event_date"),request.form.get("event_date"),
                                         )
+        #inserting the event
+        else:
+            db.execute("insert into schedule  (sp_id,starts_at,ends_at,repeat_pattern,days,start_date,end_date) values(?,?,?,?,?,?,?)",
+                        sp_id[0]["sp_id"],
+                        request.form.get("starts_at"),
+                        request.form.get("ends_at"),
+                        request.form.get("repeat_pattern"),
+                        days,
+                        request.form.get("start_date"),
+                        request.form.get("end_date"),
+                                            )
     def edit(days):
         
         #putting the list of the days in a string
@@ -343,40 +356,45 @@ def schedule(year,month):
         current_events={}
         #iterating for each event in this month
         for activity in events:
-            #getting the sport name from the id
             activity["sp_name"]=db.execute("select sp_name from sport where sp_id=?",activity["sp_id"])
-            #setting the condtions to display the events in the correct dates
-            start_month_condition=(int(activity["start_date"][0:4])==year and int(activity["start_date"][5:7])<=month)
-            start_year_condtion=int(activity["start_date"][0:4])<year
-            end_month_condition=(int(activity["end_date"][0:4])==year and int(activity["end_date"][5:7])>=month)
-            end_year_condition=int(activity["end_date"][0:4])>year
-            #checking for the events that are in that month 
-            if (start_year_condtion or start_month_condition   )and (end_year_condition or end_month_condition ):
-                #making the list of the days that event appear
-                days=[day for day in activity["days"].split(",") if day]
-                #iterating for every week
-                for week in cal:
-                    #iterating for every day
-                    for day in range(7):
-                        #checking for days that match the repeat pattern
-                        if str(day) in days and week[day]!=0 :
-                            #checking if we are before the start day if it's the same year and month (that's why we put not)
-                            start_day_condition=(int(activity["start_date"][0:4])==year and int(activity["start_date"][5:7])==month  and week[day]<int(activity["start_date"][8:]))
-                            #checking that we are after the end day if it's the same year and month (that's why we put not)
-                            end_day_condition=(int(activity["end_date"][0:4])==year and int(activity["end_date"][5:7])==month  and week[day]>int(activity["start_date"][8:]))
-                            if not (start_day_condition) and not (end_day_condition ):
-                                #putting the event date and info in the dictionarry
-                                formatted_date = '{:04d}-{:02d}-{:02d}'.format(year, month,week[day])
-                                current_events[str(activity["sc_id"])+formatted_date]=[formatted_date,activity["sp_name"][0]["sp_name"],activity["starts_at"],activity["ends_at"]]
+            if activity["repeat_pattern"]!="irregular":
+                #getting the sport name from the id
+                
+                #setting the condtions to display the events in the correct dates
+                start_month_condition=(int(activity["start_date"][0:4])==year and int(activity["start_date"][5:7])<=month)
+                start_year_condtion=int(activity["start_date"][0:4])<year
+                end_month_condition=(int(activity["end_date"][0:4])==year and int(activity["end_date"][5:7])>=month)
+                end_year_condition=int(activity["end_date"][0:4])>year
+                #checking for the events that are in that month 
+                if (start_year_condtion or start_month_condition   )and (end_year_condition or end_month_condition ):
+                    #making the list of the days that event appear
+                    days=[day for day in activity["days"].split(",") if day]
+                    #iterating for every week
+                    for week in cal:
+                        #iterating for every day
+                        for day in range(7):
+                            #checking for days that match the repeat pattern
+                            if str(day) in days and week[day]!=0 :
+                                #checking if we are before the start day if it's the same year and month (that's why we put not)
+                                start_day_condition=(int(activity["start_date"][0:4])==year and int(activity["start_date"][5:7])==month  and week[day]<int(activity["start_date"][8:]))
+                                #checking that we are after the end day if it's the same year and month (that's why we put not)
+                                end_day_condition=(int(activity["end_date"][0:4])==year and int(activity["end_date"][5:7])==month  and week[day]>int(activity["start_date"][8:]))
+                                if not (start_day_condition) and not (end_day_condition ):
+                                    #putting the event date and info in the dictionarry
+                                    formatted_date = '{:04d}-{:02d}-{:02d}'.format(year, month,week[day])
+                                    current_events[str(activity["sc_id"])+formatted_date]=[formatted_date,activity["sp_name"][0]["sp_name"],activity["starts_at"],activity["ends_at"]]
+            else:
+                #for the irregular events
+                current_events[str(activity["sc_id"])+activity["start_date"]]=[activity["start_date"],activity["sp_name"][0]["sp_name"],activity["starts_at"],activity["ends_at"]]
             #changing the numbers for their correspond days name
             week_days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
         
             days_output=""
-            
-            for i in range(7):
-                if str(i) in activity["days"]:
-                    days_output=days_output + week_days[i] + " "
-            activity["days_output"]=days_output
+            if activity["days"]:
+                for i in range(7):
+                    if str(i) in activity["days"]:
+                        days_output=days_output + week_days[i] + " "
+                activity["days_output"]=days_output
             
         
         
@@ -384,11 +402,15 @@ def schedule(year,month):
         sport=db.execute("select sp_id,sp_name from sport;")
         return render_template("schedule.html",events=events,cal=cal,start_month_condition=start_month_condition,month=month,year=year,current_events=current_events,sport=sport,week_days=week_days)
     elif request.method=="POST":
-        days=""
-        list=request.form.getlist("days[]")
+        if request.form.get("repeat_pattern")!="irregular":
+            days=""
+            list=request.form.getlist("days[]")
+        
         #putting the list of the days in a string
-        for day in list:
-            days=days + day +","
+            for day in list:
+                days=days + day +","
+        else:
+            days=""
         if request.form.get("form_id")=="formsch-add":
             add(days)
 
@@ -404,10 +426,10 @@ def schedule(year,month):
         week_days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
         for event in events:
             days_output=""
-            
-            for i in range(7):
-                if str(i) in event["days"]:
-                    days_output=days_output + week_days[i] + " "
+            if event["days"]:
+                for i in range(7):
+                    if str(i) in event["days"]:
+                        days_output=days_output + week_days[i] + " "
             event["days"]=days_output
             event["sp_name"]=db.execute("select sp_name from sport where sp_id=?",event["sp_id"])
         return render_template("index.html",year=year,month=month,date=date,days=days,events=events,week_days=week_days)
