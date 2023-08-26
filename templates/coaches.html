@@ -122,12 +122,12 @@
                             </div>
                             <br>
                             <div class="mb-3">
-                              <label for="selectOption" id="label">Select a Sport:</label>
+                              <label for="selectOption" id="label">Select a Coach:</label>
                               <select class="form-control" id="sp_name" name="sp_id">
                                 <option value="">˅</option>
                                 {% for s in sport %}
                                 
-                                <option value="{{s.sp_id}}" >{{s.sp_name}}</option>
+                                <option value="{{s.co_id}}" >{{s.co_Fname}} {{s.co_Lname}}</option>
                                 {% endfor %}
                               </select>
                             </div>

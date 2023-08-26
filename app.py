@@ -446,7 +446,71 @@ def current_month_calendar():
 @app.route('/sport', methods=["GET", "POST"])
 @login_required
 def sport():
-    return render_template("sport.html")
+    def add():
+        #checking if the name already exist 
+        names=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
+        if len(names)>0:
+            return "sport already exist"
+        db.execute("insert into sport (sp_name,max_capacity) values (?,?)",request.form.get("sp_name"),request.form.get("max_capacity"))
+        
+
+    def add_c():
+        sp_id=db.execute("select sp_id from sport where sp_name=?",request.form.get("sp_name"))
+        db.execute("insert into coaches (co_id,sp_id,starts_at,ends_at) values(?,?,?,?)",
+                       request.form.get("co_id"),
+                       sp_id[0]["sp_id"],
+                       request.form.get("starts_at"),
+                       request.form.get("ends_at"))
+
+    
+    def edit():
+        dict_sport={"sp_name":request.form.get("sp_name"),"max_capacity":request.form.get("max_capacity")}
+        for key,value in dict_sport.items():
+            db.execute("update sport set ?=? where sp_id=?",key,value,request.form.get("sp_id"))
+         
+    def delete():
+        db.execute("delete from sport where sp_id=?",request.form.get("sp_id"))
+    
+    
+    coach=db.execute("select co_id,co_Fname,co_Lname from coach;")
+    sports_with_no_coach=db.execute("select sp_id,sp_name,max_capacity from sport where sp_id not in(select sp_id from coaches);")
+    coaching_view=db.execute("select sp_id,sp_name,max_capacity,GROUP_CONCAT(co_Fname || ' ' || co_Lname,', ') as coach_list  from coaching_view group by sp_name;")
+    if request.method=="GET":
+        
+        return render_template("sport.html",coach=coach,coaching_view=coaching_view,sports_with_no_coach=sports_with_no_coach)
+    else :
+        if request.form.get("form_id")=="formsp-add":
+            result=add()
+            if result is None:
+                if request.form.get("co_id"):
+                    add_c()
+                    return render_template("sport.html",coach=coach,success="sport and his coach added successfuly",coaching_view=coaching_view,sports_with_no_coach=sports_with_no_coach)
+
+                else:
+                    return render_template("sport.html",coach=coach,success="sport added successfuly",coaching_view=coaching_view,sports_with_no_coach=sports_with_no_coach)
+            else:
+                return render_template("sport.html",coach=coach,error=result,coaching_view=coaching_view,sports_with_no_coach=sports_with_no_coach)
+
+            
+           
+        elif "formsp-edit" in request.form.get("form_id"):
+            if request.form.get("form_id")=="formsp-edit-withoutcoach":
+
+                edit()
+                if request.form.get("co_id"):
+                    add_c()  
+                    return render_template("sport.html",coach=coach,success="sport edited successfuly, Coach added successfuly",coaching_view=coaching_view,sports_with_no_coach=sports_with_no_coach)
+
+                else:
+                    return render_template("sport.html",coach=coach,success="sport edited successfuly",coaching_view=coaching_view,sports_with_no_coach=sports_with_no_coach)
+            else:
+                edit()
+                return render_template("sport.html",coach=coach,success="sport edited successfuly",coaching_view=coaching_view,sports_with_no_coach=sports_with_no_coach)
+                  
+        else:
+            delete()
+            return render_template("sport.html",coach=coach,success="sport deleted successfuly",coaching_view=coaching_view,sports_with_no_coach=sports_with_no_coach)
+
 
 @app.route('/coach', methods=["GET", "POST"])
 @login_required
@@ -506,7 +570,7 @@ def coach():
    
     if request.method=="GET":
         return render_template("coaches.html",sport=sport,coaching_view=coaching_view)
-    if request.method=="POST":
+    else:
         if request.form.get("form_id")=="formco-add":
             result=add()
             if result is None:
