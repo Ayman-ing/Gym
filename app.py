@@ -442,3 +442,85 @@ def current_month_calendar():
         year = now.year
         month = now.month
         return redirect(url_for('schedule', year=year, month=month))
+
+@app.route('/sport', methods=["GET", "POST"])
+@login_required
+def sport():
+    return render_template("sport.html")
+
+@app.route('/coach', methods=["GET", "POST"])
+@login_required
+def coach():
+    coaching_view=db.execute("select * from coaching_view;")
+    
+    sport=db.execute("select sp_id,sp_name from sport;")
+
+    def add():
+        if (not request.form.get("co_num").isnumeric()) or len(request.form.get("co_num"))<8:
+                return "phone number invalid"
+            #checking the phone number already exist
+        number=db.execute("select co_Fname from coach where co_num=?;",request.form.get("co_num"))
+        if len(number)>0:
+            return "phone number already exist"
+        if request.form.get("salary"):
+
+            if (not request.form.get("salary").isnumeric()):
+                return "salary invalid"
+        db.execute("insert into coach (co_Fname,co_Lname,co_num,salary,paid_at) values (?,?,?,?,?)",
+                   request.form.get("co_Fname"),
+                   request.form.get("co_Lname"),
+                   request.form.get("co_num"),
+                   request.form.get("salary"),
+                   request.form.get("paid_at")
+                    )
+        co_id=db.execute("select co_id from coach where co_num=?",request.form.get("co_num"))
+        db.execute("insert into coaches (co_id,sp_id,starts_at,ends_at) values(?,?,?,?)",
+                   co_id[0]["co_id"],
+                   request.form.get("sp_id"),
+                   request.form.get("starts_at"),
+                   request.form.get("ends_at"))
+    def edit():
+        if request.form.get("co_num"):
+            if (not request.form.get("co_num").isnumeric()) or len(request.form.get("co_num"))<8:
+                    return "phone number invalid"
+            #checking the phone number already exist
+            number=db.execute("select co_Fname from coach where co_num=?;",request.form.get("co_num"))
+            if len(number)>0:
+                return "phone number already exist"
+        if request.form.get("salary"):
+
+            if (not request.form.get("salary").isnumeric()):
+                return "salary invalid"
+        dict_coach={"co_Fname":request.form.get("co_Fname"),"co_Lname":request.form.get("co_Lname"),"co_num":request.form.get("co_num"),
+                    "salary":request.form.get("salary"),"paid_at":request.form.get("paid_at")}
+        dict_coaches={"sp_id":request.form.get("sp_id"),"starts_at":request.form.get("starts_at"),"ends_at":request.form.get("ends_at")}
+        for key,value in dict_coach.items():
+            if value:
+                db.execute("update coach set ?=? where co_id=?;",key,value,request.form.get("co_id"))
+        for key,value in dict_coaches.items():
+            if value:
+                db.execute("update coaches set ?=? where co_id=?;",key,value,request.form.get("co_id"))
+    def delete():
+        db.execute("delete from coach where co_id=?",request.form.get("co_id"))
+        
+   
+    if request.method=="GET":
+        return render_template("coaches.html",sport=sport,coaching_view=coaching_view)
+    if request.method=="POST":
+        if request.form.get("form_id")=="formco-add":
+            result=add()
+            if result is None:
+                return render_template("coaches.html",success="coach added successfuly",sport=sport,coaching_view=coaching_view)
+            else:
+                return render_template("coaches.html",error=result,sport=sport,coaching_view=coaching_view)
+        elif request.form.get("form_id")=="formco-edit":
+            result=edit()
+            if result is None:
+                return render_template("coaches.html",success="coach edited successfuly",sport=sport,coaching_view=coaching_view)
+            else:
+                return render_template("coaches.html",error=result,sport=sport,coaching_view=coaching_view)
+        else :
+            delete()
+            return render_template("coaches.html",success="coach deleted successfuly",sport=sport,coaching_view=coaching_view)
+          
+       

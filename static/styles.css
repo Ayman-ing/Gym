@@ -199,9 +199,11 @@ table[id="schedule"] td, table[id="schedule"] th
 }
 table[id="schedule"] td
 {
-    height:150px;
+    height:12em;
+    
    background-color: #d3d3d3;
    border:1px solid black;
+   
 }
 .date
 {
@@ -230,9 +232,10 @@ ul[id="events"] li
     /*border:solid black;*/
     width:100%;
     text-align: left;
-    padding-left:7px;
+    padding-left:0px;
     padding-top:0;
-    margin-top:0%;
+    padding-bottom: 20%;
+    margin-top:-20%;
 }
 a{
     text-decoration: none;
@@ -280,4 +283,41 @@ ul[id="events"]
 }
 .btn-group{
     margin-top:15px;
+}
+.table-container
+{
+    display:flex;
+}
+#coaches_table
+{
+    
+    width:68%;
+    float:right;
+    margin-top:0%;
+    border:solid black;
+    flex:1;
+}
+#coaches_form
+{
+   
+    width:30%;
+    float:left;
+    border: solid black;
+    flex:1;
+    
+}
+#add_coach
+{
+    text-align:left;
+    margin-top:2.5%;
+}
+#coaches
+{
+    margin-left:32%;
+}
+label 
+{
+    float:left;
+    
+    margin-bottom: 2%;
 }
