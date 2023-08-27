@@ -4,7 +4,7 @@ nav .navbar-brand
     font-size: xx-large;
     background-color: #333;
    
-    color: white;
+    
     text-align: center;
     padding: 10px;
     border-radius: 8px;
@@ -13,8 +13,7 @@ nav .navbar-brand
 .collapse, .navbar-collapse
 {
     
-   
-    color: white;
+  
     text-align: center;
     padding: 10px;
     border-radius: 8px;
