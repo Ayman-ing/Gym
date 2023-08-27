@@ -7,7 +7,10 @@
 
 
 {% block main %}
-<!--view the events -->
+{% if success %}
+  <div class="alert alert-success" role="alert">{{success}}</div>
+{% endif %}
+  <!--view the events -->
 <div id="accordion">
     <div class="card">
       <div class="card-header" id="headingTwo">
@@ -364,13 +367,13 @@
                                                 <td>   
                                                 <div class="mb-3">
                                                     <label>Start Date <input autocomplete="off" autofocus class="form-control mx-auto w-auto" 
-                                                        id="m_type" name="start_date" placeholder="Start Date" type="date" ></label> 
+                                                        id="m_type" name="start_date" placeholder="Start Date" type="date" required></label> 
                                                 </div>
                                             </td>
                                                 <td>
                                                     <div class="mb-3">
                                                         <label>End Date <input autocomplete="off" autofocus class="form-control mx-auto w-auto" 
-                                                            id="m_type" name="end_date" placeholder="Start Date" type="date" ></label> 
+                                                            id="m_type" name="end_date" placeholder="Start Date" type="date" required></label> 
                                                     </div>
                                                 </td>
                                             </tr>
@@ -403,5 +406,20 @@
         
     {% endfor %}
 </table>
-
+<div class="btn-group" id="button_cal" role="group" aria-label="Basic example">
+  {% if month ==1 %}<button type="button" class="btn btn-secondary">
+  <a href="{{ url_for('schedule', year=year-1, month=12) }}">Previous Month</a></button>
+  {% else %}
+  <button type="button" class="btn btn-secondary">
+  <a href="{{ url_for('schedule', year=year, month=month-1) }}">Previous Month</a></button>
+  {% endif %}
+  <button type="button" class="btn btn-secondary"><a href="{{ url_for('schedule', year=year, month=month) }}"> {{month}} {{year}}  </a></button></button>
+  {% if month==12 %}
+  <button type="button" class="btn btn-secondary">
+  <a href="{{ url_for('schedule', year=year+1, month=1) }}">Next Month    </a></button>
+  {% else %}
+  <button type="button" class="btn btn-secondary">
+       <a href="{{ url_for('schedule', year=year, month=month+1) }}">Next Month     </a></button>
+  {% endif %}
+  </div>
 {% endblock %}

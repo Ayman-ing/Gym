@@ -2,8 +2,23 @@
 nav .navbar-brand
 {
     font-size: xx-large;
-}
+    background-color: #333;
+   
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
 
+}
+.collapse, .navbar-collapse
+{
+    
+   
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+}
 /* Colors for brand */
 nav .navbar-brand .blue
 {
@@ -320,4 +335,122 @@ label
     float:left;
     
     margin-bottom: 2%;
+}
+.custom-table
+{
+    display:flex;
+    
+}
+/* Style the custom table */
+.custom-table-right{
+   
+    float:right;
+    flex:1;
+    width:60%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 3px 10px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    margin-right:1%;
+    margin-top:2%;
+  }
+  .custom-table-right:hover{
+    margin-top:1.3%;
+    margin-right:1%;
+  }
+
+ 
+  .custom-table-left{
+
+    float:left;
+    flex:1;
+    width: 37%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 3px 10px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    margin-top:-4.5%;
+
+  }
+  .custom-table-left:hover{
+    margin-top:-4%;
+  } 
+  /* Style the table rows */
+
+  
+  /* Style alternate rows differently for a zebra effect */
+  .table-row:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  /* Hover effect on rows */
+  .table-row:hover {
+    background-color: #e0e0e0;
+  }
+  
+  /* Reset some default browser styles */
+
+
+/* Style the header */
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+
+nav a {
+    text-decoration: none;
+    color: white;
+}
+
+/* Style the main content */
+main {
+    padding: 20px;
+}
+
+/* Style sections */
+section {
+    margin-bottom: 20px;
+}
+#button_cal
+{
+    margin-top:78%;
+    
+    display:block;
+}
+.time {
+    font-size: 17px;
+    font-weight: bold; 
+    color: #433535; 
+    background-color: #cfffc4; 
+    margin-bottom:5px;
+    border-radius: 5px; /* Round the corners of the time element */
+    display: inline-block; /* Ensure the time element doesn't break onto a new line */
+}
+#title
+{
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+}
+#active-member
+{
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    float:right;
+    flex:1;
+    width:60%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 3px 10px 4px rgba(0, 0, 0, 0.1);
+    margin-right:1%;
+    margin-top:2%;
 }

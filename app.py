@@ -36,10 +36,7 @@ moment = Moment(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///gym1.db")
 
-@app.route("/")
-@login_required
-def index():
-    return render_template("index.html")
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
@@ -401,6 +398,10 @@ def schedule(year,month):
         #taking all the sport for the form
         sport=db.execute("select sp_id,sp_name from sport;")
         return render_template("schedule.html",events=events,cal=cal,start_month_condition=start_month_condition,month=month,year=year,current_events=current_events,sport=sport,week_days=week_days)
+    
+    
+    
+    #POST 
     elif request.method=="POST":
         if request.form.get("repeat_pattern")!="irregular":
             days=""
@@ -432,7 +433,7 @@ def schedule(year,month):
                         days_output=days_output + week_days[i] + " "
             event["days"]=days_output
             event["sp_name"]=db.execute("select sp_name from sport where sp_id=?",event["sp_id"])
-        return render_template("index.html",year=year,month=month,date=date,days=days,events=events,week_days=week_days)
+        return render_template("schedule.html",success="Success ! refresh page to see result",year=year,month=month,date=date,days=days,events=events,week_days=week_days)
 
 @app.route('/schedule', methods=["GET", "POST"])
 @login_required
@@ -442,6 +443,46 @@ def current_month_calendar():
         year = now.year
         month = now.month
         return redirect(url_for('schedule', year=year, month=month))
+@app.route("/")
+@login_required
+def index():
+        admin=db.execute("select ad_username from Admin where ad_id=?;",session["user_id"])
+        current_day=datetime.datetime.now().strftime('%Y-%m-%d')
+        active_member=db.execute("select cl_Fname,cl_Lname,cl_num,sp_name from member where starts_at<=? and ends_at >?",current_day,current_day)
+        now = datetime.datetime.now()
+        year = now.year
+        month = now.month
+        cal=generate_calendar(year,month)
+        #getting the events 
+        events=db.execute("select * from schedule where start_date<=? and end_date >=?;",current_day,current_day)
+        current_events={}
+        #iterating for each event in this month
+        for activity in events:
+            activity["sp_name"]=db.execute("select sp_name from sport where sp_id=?",activity["sp_id"])
+            if activity["repeat_pattern"]!="irregular":
+                #setting the condtions to display the events in the correct dates
+       
+                    #making the list of the days that event appear
+                    days=[day for day in activity["days"].split(",") if day]
+                    #iterating for every week
+                    for week in cal:
+                        #iterating for every day
+                        for day in range(7):
+                            #checking for days that match the repeat pattern
+                            if str(day) in days and week[day]!=0 :
+                                #checking if we are before the start day if it's the same year and month (that's why we put not)
+                                start_day_condition=(int(activity["start_date"][0:4])==year and int(activity["start_date"][5:7])==month  and week[day]<int(activity["start_date"][8:]))
+                                #checking that we are after the end day if it's the same year and month (that's why we put not)
+                                end_day_condition=(int(activity["end_date"][0:4])==year and int(activity["end_date"][5:7])==month  and week[day]>int(activity["start_date"][8:]))
+                                if not (start_day_condition) and not (end_day_condition ):
+                                    #putting the event date and info in the dictionarry
+                                    formatted_date = '{:04d}-{:02d}-{:02d}'.format(year, month,week[day])
+                                    current_events[str(activity["sc_id"])+formatted_date]=[formatted_date,activity["sp_name"][0]["sp_name"],activity["starts_at"],activity["ends_at"]]
+            else:
+                #for the irregular events
+                current_events[str(activity["sc_id"])+activity["start_date"]]=[activity["start_date"],activity["sp_name"][0]["sp_name"],activity["starts_at"],activity["ends_at"]]
+        return render_template("index.html",active_member=active_member,current_events=current_events,current_day=current_day,admin=admin)
+
 
 @app.route('/sport', methods=["GET", "POST"])
 @login_required
