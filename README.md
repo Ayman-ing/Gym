@@ -2,8 +2,8 @@
 # Elite  Gym system  management 
 #### Video Demo:  https://youtu.be/cIlpgGeqMJo
 #### Description:
-So this is my cs50 final project , it's a local web application where I tried to focus on the back-end side of my application and no much at the front -end
-so first I started by desinging my databbase using looping as same as I learned in my university trying as much as pssible to avoid redondance by using the normalization process.
+So this is my cs50 final project , it's a local web application where I tried to practice what I learned during this course journey.
+so first I started by desinging my databbase using looping as same as I learned in my university trying as much as pssible to avoid redondancy by using the normalization process.
 Then I tried to set up phpliteadmin on my local server as I liked it  from the last week (flask) which was a little bit challenging specially I'm not a familiar with ubuntu (I installed wsl on my windows).
 For the database used sqlite3 .
 For the login and register Page I didn't change so much compared to the flask week as I think I don't find it challenging any more, I mean I want to focus on things newer and much more complicated,which I faced in member page and schedule page specially.
