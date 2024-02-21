@@ -3,7 +3,7 @@
 #### Video Demo:  https://youtu.be/cIlpgGeqMJo
 #### Description:
 So this is my cs50 final project , it's a local web application where I tried to practice what I learned during this course journey.
-so first I started by desinging my databbase using looping as same as I learned in my university trying as much as pssible to avoid redondancy by using the normalization process.
+so first I started by desinging my databbase using looping as I learned in my university trying as much as possible to avoid redondancy by using the normalization process.
 
 <img src=image.png>
 Then I tried to set up phpliteadmin on my local server as I liked it  from the last week (flask) which was a little bit challenging specially I'm not a familiar with ubuntu (I installed wsl on my windows).
