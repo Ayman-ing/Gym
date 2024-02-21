@@ -6,8 +6,8 @@ So this is my cs50 final project , it's a local web application where I tried to
 so first I started by desinging my databbase using looping as I learned in my university trying as much as possible to avoid redondancy by using the normalization process.
 
 <img src=image.png>
-Then I tried to set up phpliteadmin on my local server as I liked it  from the last week (flask) which was a little bit challenging specially I'm not a familiar with ubuntu (I installed wsl on my windows).
-For the database used sqlite3 .
+Then I tried to set up phpliteadmin on my local server which was a little bit challenging specially I wasn't familiar with ubuntu (I installed wsl on my windows).
+For the database I used sqlite3 .
 For the login and register Page I didn't change so much compared to the flask week as I think I don't find it challenging any more, I mean I want to focus on things newer and much more complicated,which I faced in member page and schedule page specially.
 I suffered so much to find a good and optimzed solution to add ,edit and delete members and memeberships which I thing still not a good design ,however ,for my limited knowledge, I'm proud of it. 
 then I faced an other difficulty in adding the schedule where I have to set up a calendar and show all the events in every month at their own days choosen,without forget the buttons for every cell of the schedule that made me lose my mind as they don't want to fit the cell.
